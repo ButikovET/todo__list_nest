@@ -9,7 +9,6 @@ export class TodoController {
 
   @Post()
   create(@Body() createTodoDto: CreateTodoDto) {
-    console.log(createTodoDto)
     return this.todoService.create(createTodoDto);
   }
 
