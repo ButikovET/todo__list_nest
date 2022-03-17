@@ -12,12 +12,11 @@ export class TodoService {
   async create(createTodoDto: CreateTodoDto): Promise<Todo>{
     const createdTodo = new this.todoModel(createTodoDto)
     const result = createdTodo.save();
-    console.log(result)
     return result
   }
-  
-  async findAll(): Promise<Todo[]> {
-    return this.todoModel.find().exec();
+
+  async findAll(id): Promise<Todo[]> {
+    return this.todoModel.find({author_id: id}).exec();
   }
 
   async findOne(id: string) {

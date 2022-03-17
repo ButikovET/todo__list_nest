@@ -5,10 +5,12 @@ export type TodoDocument = Todo & Document;
 
 @Schema()
 export class Todo {
-    @Prop()
+    @Prop({required: true})
     text: string;
     @Prop({default: "false"})
     isDone: boolean;
+    @Prop({required: true})
+    author_id: string;
 }
 
 export const TodoSchema = SchemaFactory.createForClass(Todo);
