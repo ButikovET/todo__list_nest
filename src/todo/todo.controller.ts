@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
@@ -11,14 +21,20 @@ export class TodoController {
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Req() request) {
-    const dto: CreateTodoDto = { author_id: request.user.sub, text:request.body.text }
+    const dto: CreateTodoDto = {
+      author_id: request.user.sub,
+      text: request.body.text,
+    };
     return this.todoService.create(dto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Req() request) {
-    return this.todoService.findAll(request.user.sub);
+    return this.todoService.findAll(request.user.sub)
+    .then((resp) => {
+      return { todoItems: resp, name: request.user.username };
+    });
   }
 
   @UseGuards(JwtAuthGuard)
@@ -35,7 +51,7 @@ export class TodoController {
 
   @UseGuards(JwtAuthGuard)
   @Patch()
-  updateAllIsDone(@Body('isDone') updateTodoDto: UpdateTodoDto){
+  updateAllIsDone(@Body('isDone') updateTodoDto: UpdateTodoDto) {
     return this.todoService.updateAllIsDone(updateTodoDto);
   }
 

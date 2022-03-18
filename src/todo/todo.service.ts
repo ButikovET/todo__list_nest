@@ -16,7 +16,7 @@ export class TodoService {
   }
 
   async findAll(id): Promise<Todo[]> {
-    return this.todoModel.find({author_id: id}).exec();
+    return await this.todoModel.find({author_id: id}).exec();
   }
 
   async findOne(id: string) {
