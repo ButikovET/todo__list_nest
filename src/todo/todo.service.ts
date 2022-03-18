@@ -9,14 +9,14 @@ import { Todo, TodoDocument } from './entities/todo.entity';
 export class TodoService {
   constructor(@InjectModel(Todo.name) private todoModel: Model<TodoDocument>) {}
 
-  async create(createTodoDto: CreateTodoDto): Promise<Todo>{
-    const createdTodo = new this.todoModel(createTodoDto)
+  async create(createTodoDto: CreateTodoDto): Promise<Todo> {
+    const createdTodo = new this.todoModel(createTodoDto);
     const result = createdTodo.save();
-    return result
+    return result;
   }
 
   async findAll(id): Promise<Todo[]> {
-    return await this.todoModel.find({author_id: id}).exec();
+    return await this.todoModel.find({ author_id: id }).exec();
   }
 
   async findOne(id: string) {
@@ -28,14 +28,14 @@ export class TodoService {
   }
 
   async updateAllIsDone(updateTodoDto: UpdateTodoDto) {
-    return this.todoModel.updateMany({"isDone": updateTodoDto});
+    return this.todoModel.updateMany({ isDone: updateTodoDto });
   }
 
   async remove(id: string) {
     return this.todoModel.findByIdAndDelete(id);
   }
 
-  async removeAllDone(){
-    return this.todoModel.deleteMany({"isDone":true});
+  async removeAllDone() {
+    return this.todoModel.deleteMany({ isDone: true });
   }
 }
