@@ -1,16 +1,12 @@
 import {
   Controller,
-  Get,
   Request,
   Post,
   UseGuards,
   Response,
   HttpStatus,
-  Body,
   Header,
-  Injectable,
 } from '@nestjs/common';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { AuthService } from './auth/auth.service';
 
@@ -52,9 +48,4 @@ export class AppController {
     });
     return req.user;
   }
-  // @UseGuards(JwtAuthGuard)
-  // @Get('users')
-  // getProfile(@Request() req: any) {
-  //   return req.user;
-  // }
 }

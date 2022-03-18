@@ -10,10 +10,15 @@ export class UsersService {
   constructor(@InjectModel(Users.name) private usersModel: Model<UsersDocument>) {}
 
   async create(createUsersDto: CreateUsersDto): Promise<Users>{
-    const createdUsers = new this.usersModel(createUsersDto)
-    const result = createdUsers.save();
-    console.log(result)
-    return result
+    const bcrypt = require('bcrypt');
+    createUsersDto.password = await bcrypt.hash(createUsersDto.password, 10);
+    const createdUsers = new this.usersModel(createUsersDto);
+    const ifUserExists = await this.findByUsername(createdUsers.username);    
+    if(!ifUserExists){
+      const result = createdUsers.save();
+      return result
+    }
+    else throw new Error('User allready exists')
   }
 
   async findByUsername(username: string) {
