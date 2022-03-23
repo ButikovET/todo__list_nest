@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req
+  Req,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
@@ -25,6 +25,7 @@ export class TodoController {
       author_id: request.user.sub,
       text: request.body.text,
       completion_date: '',
+      date_to_be_done: 'not limited',
     };
     return this.todoService.create(dto).then((response) => {
       return { newItem: response.result, totalItems: response.totalItems };
