@@ -23,7 +23,7 @@ export class TodoService {
     pageNum: number,
     ammountInOnePage: number,
   ): Promise<{ todoItems: Todo[]; numberOfItems: number }> {
-    const totalItems = await this.todoModel.collection.countDocuments();
+    const totalItems = await this.todoModel.collection.countDocuments({ author_id: id });
     return {
       todoItems: await this.todoModel
         .find({ author_id: id })

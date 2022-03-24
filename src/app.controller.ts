@@ -22,7 +22,6 @@ export class AppController {
   @Post('login')
   async login(@Request() req: any, @Response() res) {
     const response = await this.authService.login(req.user);
-
     res.cookie('token', response.access_token, {
       httpOnly: true,
       sameSite: 'Lax',
@@ -31,7 +30,9 @@ export class AppController {
 
     res.status(HttpStatus.OK).json({
       message: 'Login successful',
-      name:response.name
+      name:response.name,
+      photo: req.user.photo,
+      croppedPhoto: req.user.croppedPhoto
     });
     return req.user;
   }
