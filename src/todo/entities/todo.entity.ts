@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export type TodoDocument = Todo & Document;
 
-@Schema()
+@Schema({timestamps:true})
 export class Todo {
     @Prop({required: true})
     text: string;
@@ -11,6 +11,8 @@ export class Todo {
     isDone: boolean;
     @Prop({required: true})
     author_id: string;
+    @Prop({default: 'not limited'})
+    date_to_be_done: string;
 }
 
 export const TodoSchema = SchemaFactory.createForClass(Todo);

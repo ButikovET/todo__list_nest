@@ -9,33 +9,59 @@ import { Todo, TodoDocument } from './entities/todo.entity';
 export class TodoService {
   constructor(@InjectModel(Todo.name) private todoModel: Model<TodoDocument>) {}
 
-  async create(createTodoDto: CreateTodoDto): Promise<Todo> {
+  async create(
+    createTodoDto: CreateTodoDto,
+  ): Promise<{ result: Todo; totalItems: number }> {
     const createdTodo = new this.todoModel(createTodoDto);
-    const result = createdTodo.save();
-    return result;
+    const result = await createdTodo.save();
+    const totalItems = await this.todoModel.collection.countDocuments();
+    return { result, totalItems };
   }
 
-  async findAll(id): Promise<Todo[]> {
-    return await this.todoModel.find({ author_id: id }).exec();
+  async findAll(
+    id: string,
+    pageNum: number,
+    ammountInOnePage: number,
+  ): Promise<{ todoItems: Todo[]; numberOfItems: number }> {
+    const totalItems = await this.todoModel.collection.countDocuments({ author_id: id });
+    return {
+      todoItems: await this.todoModel
+        .find({ author_id: id })
+        .sort({ updatedAt: -1 })
+        .limit(ammountInOnePage)
+        .skip((pageNum - 1) * Number(ammountInOnePage)),
+      numberOfItems: totalItems,
+    };
   }
 
   async findOne(id: string) {
-    return this.todoModel.findById(id).exec();
+    return await this.todoModel.findById(id).exec();
   }
 
   async update(id: string, updateTodoDto: UpdateTodoDto) {
-    return this.todoModel.findByIdAndUpdate(id, updateTodoDto);
+    return await this.todoModel.findByIdAndUpdate(id, updateTodoDto);
   }
 
-  async updateAllIsDone(updateTodoDto: UpdateTodoDto) {
-    return this.todoModel.updateMany({ isDone: updateTodoDto });
+  async updateAllIsDone(updateTodoDto: UpdateTodoDto, tasks_id): Promise<any> {
+    return await this.todoModel.updateMany(
+      { _id: { $in: tasks_id } },
+      { isDone: updateTodoDto },
+    );
   }
 
   async remove(id: string) {
-    return this.todoModel.findByIdAndDelete(id);
+    const totalItems = (await this.todoModel.collection.countDocuments()) - 1;
+    return {
+      deletedItem: await this.todoModel.findByIdAndDelete(id),
+      totalItems,
+    };
   }
 
-  async removeAllDone() {
-    return this.todoModel.deleteMany({ isDone: true });
+  async removeAllDone(tasks_id: string[]): Promise<any> {
+    const totalItems = await this.todoModel.collection.countDocuments();
+    return {
+      deletedItems: await this.todoModel.deleteMany({ _id: { $in: tasks_id } }),
+      totalItems: totalItems - tasks_id.length,
+    };
   }
 }
