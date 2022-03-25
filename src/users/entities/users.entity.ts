@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Binary } from 'bson';
 import { Document } from 'mongoose';
 
 export type UsersDocument = Users & Document;
@@ -12,8 +11,8 @@ export class Users {
     username: string;
     @Prop({required: true})
     password: string;
-    @Prop()
-    photo: Binary;
+    @Prop({default: 'https://picsum.photos/200'})
+    photo: string;
     @Prop()
     croppedPhoto :string;
 }
